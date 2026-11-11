@@ -1,0 +1,100 @@
+---
+version: 0.80.0
+name: weather_open_meteo
+label: Weather
+description: Current conditions, 8 detail stats (incl. air quality and moon), today/tomorrow,
+  a 5-day outlook and an hourly chart from Open-Meteo (free, no API key).
+mode: text
+kind: poll
+tags:
+- weather
+static_body:
+fields:
+- name: Location name
+  default: Heraklion
+  keyname: location
+  field_type: string
+  description: Shown in the title bar.
+- name: Latitude
+  default: '35.3387'
+  keyname: latitude
+  field_type: string
+- name: Longitude
+  default: '25.1442'
+  keyname: longitude
+  field_type: string
+- name: Temperature unit
+  default: celsius
+  keyname: temperature_unit
+  options:
+  - celsius
+  - fahrenheit
+  field_type: select
+- name: Wind unit
+  default: kmh
+  keyname: wind_speed_unit
+  options:
+  - kmh
+  - mph
+  - ms
+  - kn
+  field_type: select
+- name: Precipitation unit
+  default: mm
+  keyname: precipitation_unit
+  options:
+  - mm
+  - inch
+  field_type: select
+- name: Forecast headings
+  default: relative
+  keyname: forecast_headings
+  options:
+  - relative
+  - dates
+  field_type: select
+  description: relative = Today / Tomorrow, dates = weekday names.
+- name: Clock
+  default: 24h
+  keyname: clock
+  options:
+  - 24h
+  - 12h
+  field_type: select
+- name: Locale
+  default: en-GB
+  keyname: locale
+  field_type: string
+  description: For day and month names, e.g. en-GB or el-GR.
+- name: Hours in the chart
+  default: 12
+  keyname: hours
+  field_type: number
+  description: Fewer are shown when they don't fit (portrait).
+data:
+  values:
+    clock: 24h
+    hours: 12
+    locale: en-GB
+    latitude: '35.3387'
+    location: Heraklion
+    longitude: '25.1442'
+    wind_speed_unit: kmh
+    temperature_unit: celsius
+    forecast_headings: relative
+    precipitation_unit: mm
+interval: 15
+unit: minute
+days: []
+last_day_of_month: false
+start_at: '2026-11-09T22:00:00+00:00'
+exchanges:
+- headers:
+    accept: application/json
+  verb: get
+  body:
+  template: https://api.open-meteo.com/v1/forecast?latitude={{ extension.values.latitude
+    }}&longitude={{ extension.values.longitude }}&current=temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m,weather_code,is_day,cloud_cover,visibility,pressure_msl,uv_index,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,precipitation_probability,weather_code,is_day,pressure_msl&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max,precipitation_sum,sunrise,sunset,daylight_duration,wind_speed_10m_max,wind_direction_10m_dominant&timezone=auto&forecast_days=7&temperature_unit={{
+    extension.values.temperature_unit }}&wind_speed_unit={{ extension.values.wind_speed_unit
+    }}&precipitation_unit={{ extension.values.precipitation_unit }} https://air-quality-api.open-meteo.com/v1/air-quality?latitude={{
+    extension.values.latitude }}&longitude={{ extension.values.longitude }}&current=european_aqi,pm10,pm2_5,dust&timezone=auto
